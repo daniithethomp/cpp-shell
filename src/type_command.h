@@ -2,7 +2,7 @@
 #include <string>
 #include "command.h"
 
-class ExitCommand : public Command {
+class TypeCommand : public Command {
     public:
         void execute(const std::string& args) override;
 

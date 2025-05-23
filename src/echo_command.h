@@ -7,4 +7,6 @@ class EchoCommand : public Command {
         void execute(const std::string& args) override;
 
         std::string type() override;
+
+        std::string name() override;
 };

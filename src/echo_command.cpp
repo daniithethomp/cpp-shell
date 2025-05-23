@@ -8,3 +8,7 @@ void EchoCommand::execute(const std::string& args) {
 std::string EchoCommand::type() {
     return "builtin";
 }
+
+std::string EchoCommand::name() {
+    return "echo";
+}

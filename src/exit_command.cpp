@@ -9,3 +9,7 @@ void ExitCommand::execute(const std::string& args) {
 std::string ExitCommand::type() {
     return "builtin";
 }
+
+std::string ExitCommand::name() {
+    return "exit";
+}

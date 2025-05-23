@@ -3,6 +3,7 @@
 CommandFactory::CommandFactory() {
         commands["exit"] = std::make_unique<ExitCommand>();
         commands["echo"] = std::make_unique<EchoCommand>();
+        commands["type"] = std::make_unique<TypeCommand>();
 }
 
 Command* CommandFactory::get(const std::string& name) {
