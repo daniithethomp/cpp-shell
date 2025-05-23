@@ -21,7 +21,9 @@ void Shell::run() {
 
         // trim leading whitespace
         size_t start = args.find_first_not_of(" ");
-        args = args.substr(args.find_first_of("'"), args.find_last_of("'")-1);
+        if (args.find_first_of("'") != std::string::npos && args.find_first_of("'") < args.find_last_of("'")) {
+            args = args.substr(args.find_first_of("'"), args.find_last_of("'")-1);
+        }
         if (start != std::string::npos) {
             args = args.substr(start);
         } else {
