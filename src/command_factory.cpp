@@ -5,6 +5,7 @@ CommandFactory::CommandFactory() {
         commands["echo"] = std::make_unique<EchoCommand>();
         commands["type"] = std::make_unique<TypeCommand>();
         commands["pwd"] = std::make_unique<PwdCommand>();
+        commands["cd"] = std::make_unique<CdCommand>();
 }
 
 Command* CommandFactory::get(const std::string& name) {
