@@ -3,9 +3,8 @@
 #include <unistd.h>
 
 void PwdCommand::execute(const std::string& args) {
-    char *cwd;
-    getcwd(cwd, sizeof(cwd));
-    if (cwd != nullptr) {
+    char cwd[1024];
+    if (getcwd(cwd, sizeof(cwd)) != nullptr) {
         std::cout << cwd << std::endl;
     } else {
         std::cerr << "Error getting current working directory" << std::endl;
