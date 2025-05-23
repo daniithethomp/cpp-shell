@@ -30,7 +30,6 @@ void Shell::run() {
         if(auto* command = commandFactory.get(cmd)) {
             command->execute(args);
         } else {
-            std::cout << "Executing custom command: " << cmd << std::endl;
             bool customCommandFound = executeCustomCommand(cmd, args);
             if (!customCommandFound) {
                 std::cout << cmd << ": command not found" << std::endl;
@@ -49,9 +48,7 @@ bool Shell::executeCustomCommand(const std::string& cmd, const std::string& args
         while ((end = pathEnvStr.find(':', start)) != std::string::npos) {
             std::string dir = pathEnvStr.substr(start, end - start);
             std::string fullPath = dir + "/" + cmd;
-            std::cout << "Checking: " << fullPath << std::endl;
             if (access(fullPath.c_str(), X_OK) == 0) {
-                std::cout << "found" << std::endl;
                 system((cmd + " " + args).c_str());
                 return true;
             }
