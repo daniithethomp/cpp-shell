@@ -3,7 +3,12 @@
 #include <unistd.h>
 
 void CdCommand::execute(const std::string& args) {
-    if (chdir(args.c_str()) != 0) {
+    int first_slash = args.find_first_of('/');
+    std::string first_dir = args.substr(0, first_slash);
+    if (first_dir == "~") {
+       chdir((getenv("HOME")+"/"+args.substr(first_slash)).c_str());
+    }
+    else if (chdir(args.c_str()) != 0) {
         std::cerr << "cd: " << args << ": No such file or directory" << std::endl;
     }
 }
