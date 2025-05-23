@@ -6,4 +6,5 @@ class Shell {
     CommandFactory commandFactory;
 public:
     void run();
+    bool executeCustomCommand(const std::string& cmd, const std::string& args);
 };

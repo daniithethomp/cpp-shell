@@ -1,6 +1,7 @@
 #include "shell.h"
 #include <iostream>
 #include <sstream>
+#include <unistd.h>
 
 void Shell::run() {
     // Flush after every std::cout / std:cerr
@@ -18,7 +19,6 @@ void Shell::run() {
         iss >> cmd;
         std::getline(iss, args);
 
-
         // trim leading whitespace
         size_t start = args.find_first_not_of(" ");
         if (start != std::string::npos) {
@@ -30,7 +30,33 @@ void Shell::run() {
         if(auto* command = commandFactory.get(cmd)) {
             command->execute(args);
         } else {
-            std::cout << cmd << ": command not found" << std::endl;
+            std::cout << "Executing custom command: " << cmd << std::endl;
+            bool customCommandFound = executeCustomCommand(cmd, args);
+            if (!customCommandFound) {
+                std::cout << cmd << ": command not found" << std::endl;
+            }
         }
     }
+};
+
+bool Shell::executeCustomCommand(const std::string& cmd, const std::string& args) {
+    const std::string path = "PATH";
+    const char* envPath = getenv(path.c_str());
+
+    if (envPath != nullptr) {
+        std::string pathEnvStr(envPath);
+        size_t start = 0, end = 0;
+        while ((end = pathEnvStr.find(':', start)) != std::string::npos) {
+            std::string dir = pathEnvStr.substr(start, end - start);
+            std::string fullPath = dir + "/" + cmd;
+            std::cout << "Checking: " << fullPath << std::endl;
+            if (access(fullPath.c_str(), X_OK) == 0) {
+                std::cout << "found" << std::endl;
+                system((cmd + " " + args).c_str());
+                return true;
+            }
+            start = end + 1;
+        }
+    }
+    return false;
 };
