@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
+#include <vector>
 
 void Shell::run() {
     // Flush after every std::cout / std:cerr
@@ -22,12 +23,22 @@ void Shell::run() {
         // trim leading whitespace
         size_t start = args.find_first_not_of(" ");
         if (args.find_first_of("'") != std::string::npos && args.find_first_of("'") < args.find_last_of("'")) {
-            args = args.substr(args.find_first_of("'"), args.find_last_of("'")-1);
-        }
-        if (start != std::string::npos) {
-            args = args.substr(start);
+            args = args.substr(args.find_first_of("'") + 1, args.find_last_of("'")-2);
         } else {
+            std::istringstream argsStream(args);
+            std::vector<std::string> argList;
+            std::string arg;
+            while (argsStream >> arg) {
+                argList.push_back(arg);
+            }
+
             args.clear();
+            for(size_t i = 0; i < argList.size(); ++i) {
+                args += argList[i];
+                if (i < argList.size()) {
+                    args += " ";
+                }
+            }
         }
         
         if(auto* command = commandFactory.get(cmd)) {
