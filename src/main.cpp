@@ -10,6 +10,6 @@ int main() {
   std::cout << "$ ";
 
   std::string input;
-  input = std::getline(std::cin, input);
+  std::getline(std::cin, input);
   std::cout << input << ": command not found" << std::endl;
 }
