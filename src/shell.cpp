@@ -20,10 +20,10 @@ void Shell::run() {
         iss >> cmd;
         std::getline(iss, args);
 
-        args = cleanArgs(args);
+        std::string cleanedArgs = cleanArgs(args);
         
         if(auto* command = commandFactory.get(cmd)) {
-            command->execute(args);
+            command->execute(cleanedArgs);
         } else {
             bool customCommandFound = executeCustomCommand(cmd, args);
             if (!customCommandFound) {
