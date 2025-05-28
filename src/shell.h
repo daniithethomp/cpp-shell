@@ -7,4 +7,5 @@ class Shell {
 public:
     void run();
     bool executeCustomCommand(const std::string& cmd, const std::string& args);
+    std::string cleanArgs(const std::string& args);
 };

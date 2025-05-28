@@ -20,26 +20,7 @@ void Shell::run() {
         iss >> cmd;
         std::getline(iss, args);
 
-        // trim leading whitespace
-        size_t start = args.find_first_not_of(" ");
-        if (args.find_first_of("'") != std::string::npos && args.find_first_of("'") < args.find_last_of("'")) {
-            args = args.substr(args.find_first_of("'") + 1, args.find_last_of("'")-2);
-        } else {
-            std::istringstream argsStream(args);
-            std::vector<std::string> argList;
-            std::string arg;
-            while (argsStream >> arg) {
-                argList.push_back(arg);
-            }
-
-            args.clear();
-            for(size_t i = 0; i < argList.size(); ++i) {
-                args += argList[i];
-                if (i < argList.size()) {
-                    args += " ";
-                }
-            }
-        }
+        args = cleanArgs(args);
         
         if(auto* command = commandFactory.get(cmd)) {
             command->execute(args);
@@ -50,6 +31,47 @@ void Shell::run() {
             }
         }
     }
+};
+
+std::string Shell::cleanArgs(const std::string& args) {
+    std::vector<std::string> result;
+    std::string current;
+    bool inQuotes = false;
+
+    for(size_t i = 0; i < args.size(); ++i) {
+        char c = args[i];
+        if (c == '\'') {
+            inQuotes = !inQuotes;
+            if (!inQuotes  && !current.empty()) {
+                result.push_back(current);
+                current.clear();
+            } else if (inQuotes && !current.empty()) {
+                current += c; 
+            }
+        } else if (std::isspace(c) && !inQuotes) {
+            if (!current.empty()) {
+                result.push_back(current);
+                current.clear();
+            }
+        } else {
+            current += c;
+        }
+    }
+    if (!current.empty()) {
+        if (inQuotes) {
+            current = "'" + current;
+        }
+        result.push_back(current);
+    }
+
+    std::string cleanedArgs;
+    for(size_t i = 0; i < result.size(); ++i) {
+        cleanedArgs += result[i];
+        if (i + 1 < result.size()) {
+            cleanedArgs += " ";
+        }
+    }
+    return cleanedArgs;
 };
 
 bool Shell::executeCustomCommand(const std::string& cmd, const std::string& args) {
