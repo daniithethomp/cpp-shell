@@ -37,24 +37,27 @@ std::string Shell::cleanArgs(const std::string& args) {
     std::vector<std::string> result;
     std::string current;
     bool inQuotes = false;
+    bool justClosedQuote = false;
 
     for(size_t i = 0; i < args.size(); ++i) {
         char c = args[i];
         if (c == '\'') {
             inQuotes = !inQuotes;
-            if (!inQuotes  && !current.empty()) {
+            if (!inQuotes) {
+                justClosedQuote = true;
+            } else if (!current.empty() && !justClosedQuote) {
                 result.push_back(current);
                 current.clear();
-            } else if (inQuotes && !current.empty()) {
-                current += c; 
             }
         } else if (std::isspace(c) && !inQuotes) {
             if (!current.empty()) {
                 result.push_back(current);
                 current.clear();
             }
+            justClosedQuote = false;
         } else {
             current += c;
+            justClosedQuote = false;
         }
     }
     if (!current.empty()) {
